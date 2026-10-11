@@ -101,7 +101,7 @@ Treat these links like passwords. Google refreshes them every few hours, so new 
 
 ### 4. Run it
 
-**On your phone with Expo Go:** `npx expo start`, then scan the QR code with Expo Go. On school or work Wi-Fi that blocks devices from reaching each other, use `npx expo start --tunnel`. Until you add a calendar link, the app shows sample events.
+**On your phone with Expo Go:** `npx expo start`, then scan the QR code with Expo Go. On school or work Wi-Fi that blocks devices from reaching each other, use `npm run tunnel`. It goes through a free Cloudflare tunnel (needs [`cloudflared`](https://developers.cloudflare.com/cloudflare-one/connections/connect-networks/downloads/)), because Expo's built-in `--tunnel` currently fails. Until you add a calendar link, the app shows sample events.
 
 **Sign-in and real calendars on your phone:** Google/Apple sign-in and `expo-calendar` need a [development build](https://docs.expo.dev/develop/development-builds/introduction/):
 

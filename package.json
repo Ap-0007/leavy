@@ -37,6 +37,7 @@
   },
   "scripts": {
     "start": "expo start",
+    "tunnel": "./scripts/tunnel.sh",
     "android": "expo start --android",
     "ios": "expo start --ios",
     "web": "expo start --web",
