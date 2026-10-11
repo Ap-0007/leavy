@@ -52,6 +52,20 @@ const GMAPS_MODE: Record<TravelMode, string> = {
 
 /** Without an origin, Google Maps starts from the phone's current location. */
 export function mapsUrl(destination: string, mode: TravelMode, origin?: string): string {
-  const q = new URLSearchParams({ api: '1', destination, travelmode: GMAPS_MODE[mode], ...(origin ? { origin } : {}) });
+if (ios) {
+  const q = new URLSearchParams({
+    api: '1',
+    destination,
+    travelmode: CMAPS_MODE[mode],
+    ...(origin ? { origin } : {})
+  });
+} else {
+  const q = new URLSearchParams({
+    api: '1',
+    destination,
+    travelmode: GMAPS_MODE[mode],
+    ...(origin ? { origin } : {}) 
+  });
+}
   return `https://www.google.com/maps/dir/?${q.toString()}`;
 }
