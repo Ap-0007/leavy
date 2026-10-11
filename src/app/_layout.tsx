@@ -4,6 +4,7 @@ import { StatusBar } from 'expo-status-bar';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 import { AuthProvider, useAuth } from '@/lib/auth';
+import { CloudSync } from '@/lib/cloudSync';
 import '@/lib/notifications';
 import { SettingsProvider } from '@/lib/settings';
 import { TripsProvider } from '@/lib/trips';
@@ -18,6 +19,7 @@ export default function RootLayout() {
     <SafeAreaProvider>
       <SettingsProvider>
         <AuthProvider>
+          <CloudSync />
           <TripsProvider>
             <StatusBar style={t.dark ? 'light' : 'dark'} />
             <Navigator />
