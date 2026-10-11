@@ -79,7 +79,7 @@ async function ensureSignedIn(mod: GoogleModule): Promise<boolean> {
 
 export async function googleAccessToken(): Promise<string> {
   const mod = load();
-  if (!mod || !(await ensureSignedIn(mod))) throw new Error('Google Calendar is disconnected. Connect it again in Settings.');
+  if (!mod || !(await ensureSignedIn(mod))) throw new Error('Google Calendar is disconnected. Connect it again in Connections.');
   return (await mod.GoogleSignin.getTokens()).accessToken;
 }
 

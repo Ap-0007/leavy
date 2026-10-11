@@ -12,7 +12,7 @@ import { Button, Card, LinkButton, type IconName } from './ui';
 
 const PROVIDER_NAMES: Record<string, string> = { google: 'Google', apple: 'Apple' };
 
-/** Settings → Account: who's signed in, or the sign-in buttons for guests. */
+/** Connections → Account: who's signed in, or the sign-in buttons for guests. */
 export function AccountCard() {
   const t = useTheme();
   const { account, signOut } = useAuth();
@@ -61,7 +61,7 @@ export function AccountCard() {
   );
 }
 
-/** Settings → Connected calendars: Google Calendar (API) and Apple Calendar (on-device). */
+/** Connections → Connected calendars: Google Calendar (API) and Apple Calendar (on-device). */
 export function ConnectedCalendars() {
   const t = useTheme();
   const { googleReady } = useAuth();

@@ -24,15 +24,30 @@ export default function TabsLayout() {
       <Tabs.Screen
         name="index"
         options={{
+          title: 'Home',
+          headerShown: false,
+          tabBarIcon: ({ color, focused }) => <Ionicons name={focused ? 'home' : 'home-outline'} size={22} color={color} />,
+        }}
+      />
+      <Tabs.Screen
+        name="upcoming"
+        options={{
           title: 'Upcoming',
           headerShown: false,
           tabBarIcon: ({ color, focused }) => <Ionicons name={focused ? 'navigate' : 'navigate-outline'} size={22} color={color} />,
         }}
       />
       <Tabs.Screen
-        name="settings"
+        name="connections"
         options={{
-          title: 'Settings',
+          title: 'Connections',
+          tabBarIcon: ({ color, focused }) => <Ionicons name={focused ? 'link' : 'link-outline'} size={22} color={color} />,
+        }}
+      />
+      <Tabs.Screen
+        name="preferences"
+        options={{
+          title: 'Preferences',
           tabBarIcon: ({ color, focused }) => <Ionicons name={focused ? 'options' : 'options-outline'} size={22} color={color} />,
         }}
       />

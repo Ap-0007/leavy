@@ -36,7 +36,7 @@ async function get<T>(path: string, retried = false): Promise<T> {
     await forgetGoogleToken(token);
     return get(path, true);
   }
-  if (res.status === 401 || res.status === 403) throw new Error('Google Calendar access was removed. Connect it again in Settings.');
+  if (res.status === 401 || res.status === 403) throw new Error('Google Calendar access was removed. Connect it again in Connections.');
   if (!res.ok) throw new Error(`Google Calendar error ${res.status}.`);
   return res.json();
 }

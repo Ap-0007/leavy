@@ -88,7 +88,7 @@ Apple has no calendar API. After Apple sign-in, the app asks for access to the c
 
 ### 3. Or add a calendar link
 
-In the app, open **Settings → Calendar links** and paste a link. The app shows these steps too:
+In the app, open **Connections → Calendar links** and paste a link. The app shows these steps too:
 
 - **Google Calendar** (desktop site only):
   1. Go to **calendar.google.com/calendar/r/settings**. On iPhone, open it in Safari → **aA** → *Request Desktop Website*.
@@ -110,7 +110,7 @@ npx expo run:android            # Android device/emulator (needs Android Studio)
 npx eas-cli@latest build --profile development --platform ios   # iPhone, built in the cloud
 ```
 
-To use Google Calendar, add your Google account to the phone (iOS: Settings → Calendar → Accounts; Android: it's usually already there). Its calendars then show up in the app's Settings tab.
+To use Google Calendar, add your Google account to the phone (iOS: Settings → Calendar → Accounts; Android: it's usually already there). Its calendars then show up in the app's Connections tab.
 
 ## Project layout
 
@@ -118,10 +118,12 @@ To use Google Calendar, add your Google account to the phone (iOS: Settings → 
 src/
   app/                 Expo Router screens
     sign-in.tsx        Welcome screen: Apple / Google sign-in or "Not now"
-    (tabs)/index.tsx   Upcoming: next-trip hero card + later trips
-    (tabs)/settings.tsx
+    (tabs)/index.tsx        Home: logo placeholder, greeting, next trip, shortcuts
+    (tabs)/upcoming.tsx     Upcoming: next-trip hero card + later trips
+    (tabs)/connections.tsx  Account, Google / phone calendars, calendar links, demo mode
+    (tabs)/preferences.tsx  Arrive early by, travel mode, alerts, look ahead
     trip/[id].tsx      Timeline, per-event mode / grace / alert overrides
-  components/          AccountSettings, SignInButtons, ModePicker, GraceStepper, StatusPill, TripViews, shared UI
+  components/          AccountSettings, SignInButtons, LogoPlaceholder, ModePicker, GraceStepper, StatusPill, TripViews, shared UI
   lib/
     auth.tsx           Supabase Auth session; Google and Apple sign-in
     supabase.ts        Supabase client

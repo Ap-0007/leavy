@@ -1,21 +1,17 @@
 import { useEffect, useState } from 'react';
-import { ScrollView, StyleSheet, Text, View } from 'react-native';
+import { ScrollView, StyleSheet, Text } from 'react-native';
 
 import { AccountCard, ConnectedCalendars } from '@/components/AccountSettings';
 import { CalendarLinks } from '@/components/CalendarLinks';
-import { GraceStepper } from '@/components/GraceStepper';
-import { ModePicker } from '@/components/ModePicker';
-import { Card, Chip, SectionHeader, SwitchRow } from '@/components/ui';
+import { Card, SectionHeader, SwitchRow } from '@/components/ui';
 import { listCalendars, type CalendarSummary } from '@/lib/calendar';
 import { hasApiKey } from '@/lib/routes';
 import { useSettings } from '@/lib/settings';
 import { useTrips } from '@/lib/trips';
 import { space, type, useTheme } from '@/theme';
 
-const HEADS_UP = [0, 5, 10, 15, 20];
-const LOOK_AHEAD = [6, 12, 24, 48];
-
-export default function SettingsScreen() {
+/** Account and everywhere events come from: Google, the phone's calendars, iCal links. */
+export default function ConnectionsScreen() {
   const t = useTheme();
   const { settings, update } = useSettings();
   const { calendarAccess, usingDemo } = useTrips();
@@ -48,44 +44,6 @@ export default function SettingsScreen() {
 
       <SectionHeader title="Calendar links" />
       <CalendarLinks />
-
-      <SectionHeader title="Arrive early by" />
-      <Card>
-        <GraceStepper value={settings.graceMin} onChange={(graceMin) => update({ graceMin })} />
-        <Text style={[type.caption, styles.helper, { color: t.textMuted }]}>
-          Your grace period. It applies to every event, and you can change it for a single event on its detail screen.
-        </Text>
-      </Card>
-
-      <SectionHeader title="Usually getting there by" />
-      <ModePicker value={settings.defaultMode} onChange={(defaultMode) => update({ defaultMode })} />
-
-      <SectionHeader title="Alerts" />
-      <Card style={{ gap: space.md }}>
-        <SwitchRow
-          label="Leave alerts"
-          helper="A notification when it’s time to head out."
-          value={settings.notifications}
-          onChange={(notifications) => update({ notifications })}
-        />
-        {settings.notifications ? (
-          <View style={{ gap: space.sm }}>
-            <Text style={[type.bodyStrong, { color: t.text }]}>Extra heads-up before</Text>
-            <View style={styles.chips}>
-              {HEADS_UP.map((m) => (
-                <Chip key={m} label={m === 0 ? 'Off' : `${m} min`} selected={settings.headsUpMin === m} onPress={() => update({ headsUpMin: m })} />
-              ))}
-            </View>
-          </View>
-        ) : null}
-      </Card>
-
-      <SectionHeader title="Look ahead" />
-      <View style={styles.chips}>
-        {LOOK_AHEAD.map((h) => (
-          <Chip key={h} label={`${h} hours`} selected={settings.lookAheadHours === h} onPress={() => update({ lookAheadHours: h })} />
-        ))}
-      </View>
 
       <SectionHeader title="Phone calendars" />
       <Card style={{ gap: space.sm }}>
@@ -141,6 +99,4 @@ export default function SettingsScreen() {
 
 const styles = StyleSheet.create({
   content: { paddingHorizontal: space.lg, paddingBottom: space.xxl },
-  helper: { marginTop: space.lg, textAlign: 'center' },
-  chips: { flexDirection: 'row', flexWrap: 'wrap', gap: space.sm },
 });

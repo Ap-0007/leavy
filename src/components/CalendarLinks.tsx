@@ -25,7 +25,7 @@ const ICLOUD_STEPS = [
   'Come back to this app and paste it below.',
 ];
 
-/** Settings section for adding private iCal links (Google / iCloud). */
+/** Connections section for adding private iCal links (Google / iCloud). */
 export function CalendarLinks() {
   const t = useTheme();
   const { settings, update } = useSettings();
