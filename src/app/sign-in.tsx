@@ -2,7 +2,7 @@ import Ionicons from '@expo/vector-icons/Ionicons';
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { LogoPlaceholder } from '@/components/LogoPlaceholder';
+import { Logo } from '@/components/Logo';
 import { SignInButtons } from '@/components/SignInButtons';
 import { Button } from '@/components/ui';
 import { useAuth } from '@/lib/auth';
@@ -25,7 +25,7 @@ export default function SignInScreen() {
       contentContainerStyle={[styles.content, { paddingTop: insets.top + space.xxl * 2, paddingBottom: insets.bottom + space.xl }]}
     >
       <View style={styles.logo}>
-        <LogoPlaceholder />
+        <Logo />
       </View>
       <Text style={[type.title, { color: t.text, textAlign: 'center' }]} accessibilityRole="header">
         Leavy

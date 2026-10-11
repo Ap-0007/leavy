@@ -122,7 +122,7 @@ src/
     (tabs)/connections.tsx  Account, Google / phone calendars, calendar links, demo mode
     (tabs)/preferences.tsx  Arrive early by, travel mode, alerts, look ahead
     trip/[id].tsx      Timeline, per-event mode / grace / alert overrides
-  components/          AccountSettings, SignInButtons, LogoPlaceholder, ModePicker, GraceStepper, StatusPill, TripViews, shared UI
+  components/          AccountSettings, SignInButtons, Logo, ModePicker, GraceStepper, StatusPill, TripViews, shared UI
   lib/
     auth.tsx           Supabase Auth session; Google and Apple sign-in
     supabase.ts        Supabase client
