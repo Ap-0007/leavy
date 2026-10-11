@@ -58,6 +58,8 @@ Worth checking: leave times against Google Maps, the status changes (*On track â
 
 ## Contributing
 
+Contributions of any size are welcome, from fixing a typo to adding a feature. You don't need any API keys to get started: demo mode covers most of the app, so you can clone it and start changing things right away. If you're not sure where to begin or whether an idea fits, open an issue and ask.
+
 1. Create a branch off `master`.
 2. Screens go in `src/app/` (Expo Router). Components go in `src/components/`, and logic in `src/lib/`.
 3. Add packages with `npx expo install <package>` so versions match the SDK.
