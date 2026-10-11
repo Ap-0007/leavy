@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
 
+import { AccountCard, ConnectedCalendars } from '@/components/AccountSettings';
 import { CalendarLinks } from '@/components/CalendarLinks';
 import { GraceStepper } from '@/components/GraceStepper';
 import { ModePicker } from '@/components/ModePicker';
@@ -39,7 +40,13 @@ export default function SettingsScreen() {
       keyboardShouldPersistTaps="handled"
       automaticallyAdjustKeyboardInsets
     >
-      <SectionHeader title="Your calendar" />
+      <SectionHeader title="Account" />
+      <AccountCard />
+
+      <SectionHeader title="Connected calendars" />
+      <ConnectedCalendars />
+
+      <SectionHeader title="Calendar links" />
       <CalendarLinks />
 
       <SectionHeader title="Arrive early by" />
@@ -96,7 +103,7 @@ export default function SettingsScreen() {
         ) : (
           <Text style={[type.body, { color: t.textMuted }]}>
             {calendarAccess === 'unavailable'
-              ? 'Expo Go can’t read the phone’s calendar. Use a calendar link above instead.'
+              ? 'Expo Go can’t read the phone’s calendar. Connect Google Calendar or use a calendar link instead.'
               : calendarAccess === 'denied'
                 ? 'Calendar access is off. Turn it on in your phone’s Settings.'
                 : 'No calendars found.'}

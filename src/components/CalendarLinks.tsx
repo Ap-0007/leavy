@@ -33,7 +33,7 @@ export function CalendarLinks() {
   const [draft, setDraft] = useState('');
   const [busy, setBusy] = useState(false);
   const [message, setMessage] = useState<{ tone: 'error' | 'ok'; text: string } | null>(null);
-  const [open, setOpen] = useState<'google' | 'icloud' | null>(settings.calendarFeeds.length ? null : 'google');
+  const [open, setOpen] = useState<'google' | 'icloud' | null>(null);
 
   const add = async () => {
     const url = normalizeFeedUrl(draft);
@@ -86,7 +86,7 @@ export function CalendarLinks() {
   return (
     <Card style={{ gap: space.md }}>
       <Text style={[type.body, { color: t.textMuted }]}>
-        Paste a private calendar link to see your real events. Works in Expo Go, so you don’t need a special build.
+        No account? Paste a private calendar link instead. Works in Expo Go, so you don’t need a special build.
       </Text>
 
       {settings.calendarFeeds.map((url) => (

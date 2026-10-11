@@ -3,6 +3,7 @@ import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
+import { AuthProvider, useAuth } from '@/lib/auth';
 import '@/lib/notifications';
 import { SettingsProvider } from '@/lib/settings';
 import { TripsProvider } from '@/lib/trips';
@@ -16,22 +17,41 @@ export default function RootLayout() {
   return (
     <SafeAreaProvider>
       <SettingsProvider>
-        <TripsProvider>
-          <StatusBar style={t.dark ? 'light' : 'dark'} />
-          <Stack
-            screenOptions={{
-              headerShadowVisible: false,
-              headerStyle: { backgroundColor: t.bg },
-              headerTintColor: t.primary,
-              headerTitleStyle: { fontFamily: font.semibold, color: t.text },
-              contentStyle: { backgroundColor: t.bg },
-            }}
-          >
-            <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-            <Stack.Screen name="trip/[id]" options={{ title: 'Trip', headerBackTitle: 'Back' }} />
-          </Stack>
-        </TripsProvider>
+        <AuthProvider>
+          <TripsProvider>
+            <StatusBar style={t.dark ? 'light' : 'dark'} />
+            <Navigator />
+          </TripsProvider>
+        </AuthProvider>
       </SettingsProvider>
     </SafeAreaProvider>
+  );
+}
+
+function Navigator() {
+  const t = useTheme();
+  const { ready, account, guest } = useAuth();
+  if (!ready) return null;
+  // Signed in, or chose "Not now": the app. Otherwise: the welcome / sign-in screen.
+  const inApp = account !== null || guest;
+
+  return (
+    <Stack
+      screenOptions={{
+        headerShadowVisible: false,
+        headerStyle: { backgroundColor: t.bg },
+        headerTintColor: t.primary,
+        headerTitleStyle: { fontFamily: font.semibold, color: t.text },
+        contentStyle: { backgroundColor: t.bg },
+      }}
+    >
+      <Stack.Protected guard={inApp}>
+        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+        <Stack.Screen name="trip/[id]" options={{ title: 'Trip', headerBackTitle: 'Back' }} />
+      </Stack.Protected>
+      <Stack.Protected guard={!inApp}>
+        <Stack.Screen name="sign-in" options={{ headerShown: false }} />
+      </Stack.Protected>
+    </Stack>
   );
 }
