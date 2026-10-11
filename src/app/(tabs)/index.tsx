@@ -17,7 +17,7 @@ export default function UpcomingScreen() {
   const insets = useSafeAreaInsets();
   const now = useNow();
   const { settings, update } = useSettings();
-  const { loading, refreshing, trips, noLocation, usingDemo, calendarAccess, locationAccess, feedErrors, updatedAt, refresh } = useTrips();
+  const { loading, refreshing, trips, noLocation, usingDemo, calendarAccess, locationAccess, feedErrors, googleError, updatedAt, refresh } = useTrips();
   const brokenFeeds = Object.keys(feedErrors).length;
 
   const [next, ...later] = trips;
@@ -47,22 +47,31 @@ export default function UpcomingScreen() {
           body={
             settings.demoMode
               ? 'Demo mode is on, so travel times are made up.'
-              : 'Add your Google or iCloud calendar link in Settings to see your real events.'
+              : 'Connect Google Calendar or your Apple calendar in Settings to see your real events.'
           }
           action={
             settings.demoMode
               ? { label: 'Use my calendar', onPress: () => update({ demoMode: false }) }
-              : { label: 'Add calendar link', onPress: () => router.push('/settings') }
+              : { label: 'Connect a calendar', onPress: () => router.push('/settings') }
           }
         />
       ) : null}
-      {!usingDemo && calendarAccess === 'denied' && settings.calendarFeeds.length === 0 ? (
+      {!usingDemo && calendarAccess === 'denied' && settings.calendarFeeds.length === 0 && !settings.googleCalendar ? (
         <Banner
           tone="warn"
           icon="calendar-outline"
           title="Calendar access is off"
           body="Allow access so the app can see where you need to be."
           action={{ label: 'Open Settings', onPress: () => Linking.openSettings() }}
+        />
+      ) : null}
+      {!usingDemo && googleError ? (
+        <Banner
+          tone="warn"
+          icon="logo-google"
+          title="Google Calendar isn’t loading"
+          body={googleError}
+          action={{ label: 'Check in Settings', onPress: () => router.push('/settings') }}
         />
       ) : null}
       {!usingDemo && brokenFeeds > 0 ? (

@@ -15,6 +15,8 @@ export interface Settings {
   calendarIds: string[] | null;
   /** Private iCal links (Google "secret address", iCloud share link). Work without a dev build. */
   calendarFeeds: string[];
+  /** Read events from the signed-in Google account's calendars (Google Calendar API). */
+  googleCalendar: boolean;
   demoMode: boolean;
   /** Per-event overrides, keyed by CalEvent.key. */
   modeOverrides: Record<string, TravelMode>;
@@ -31,6 +33,7 @@ export const DEFAULT_SETTINGS: Settings = {
   lookAheadHours: 12,
   calendarIds: null,
   calendarFeeds: [],
+  googleCalendar: false,
   demoMode: false,
   modeOverrides: {},
   graceOverrides: {},

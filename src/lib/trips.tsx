@@ -5,6 +5,7 @@ import { AppState, Platform } from 'react-native';
 import type { CalEvent, Trip } from '../types';
 import { fetchEvents, requestCalendarAccess, type CalendarAccess } from './calendar';
 import { demoEvents, demoRoute } from './demo';
+import { fetchGoogleEvents } from './googleCalendar';
 import { fetchFeedEvents } from './icsFeed';
 import { ensureNotificationPermission, syncLeaveAlerts } from './notifications';
 import { getRoute, hasApiKey, type LatLng } from './routes';
@@ -23,6 +24,8 @@ interface TripsState {
   noLocation: CalEvent[];
   /** Calendar links that failed to load, keyed by URL. */
   feedErrors: Record<string, string>;
+  /** Why Google Calendar didn't load, if it's connected but failed. */
+  googleError: string | null;
   updatedAt: Date | null;
 }
 
@@ -54,6 +57,7 @@ export function TripsProvider({ children }: { children: ReactNode }) {
     trips: [],
     noLocation: [],
     feedErrors: {},
+    googleError: null,
     updatedAt: null,
   });
   // Ignore results from a refresh that a newer one has overtaken.
@@ -67,22 +71,30 @@ export function TripsProvider({ children }: { children: ReactNode }) {
     const calendarAccess = await requestCalendarAccess();
     const feeds = settings.calendarFeeds;
     // Sample data only when there's no real calendar source at all (or the user asked for it).
-    const usingDemo = settings.demoMode || (calendarAccess !== 'granted' && feeds.length === 0);
+    const usingDemo =
+      settings.demoMode || (calendarAccess !== 'granted' && feeds.length === 0 && !settings.googleCalendar);
 
     let events: CalEvent[] = [];
     let locationAccess: LocationAccess = 'unknown';
     let origin: LatLng | null = null;
     const feedErrors: Record<string, string> = {};
+    let googleError: string | null = null;
 
     if (usingDemo) {
       events = demoEvents(now);
     } else {
       const from = new Date(now);
       const to = new Date(now + settings.lookAheadHours * 3_600_000);
-      const [deviceEvents, ...feedEvents] = await Promise.all([
+      const [deviceEvents, googleEvents, ...feedEvents] = await Promise.all([
         calendarAccess === 'granted'
           ? fetchEvents(settings.calendarIds, from, to).catch((e) => {
               console.warn('Device calendar failed', e);
+              return [];
+            })
+          : Promise.resolve([]),
+        settings.googleCalendar
+          ? fetchGoogleEvents(from, to).catch((e) => {
+              googleError = e instanceof Error ? e.message : 'Couldn’t load Google Calendar.';
               return [];
             })
           : Promise.resolve([]),
@@ -93,9 +105,9 @@ export function TripsProvider({ children }: { children: ReactNode }) {
           }),
         ),
       ]);
-      // The same Google calendar can arrive both via the phone and via a link; keep one copy.
+      // The same Google calendar can arrive via the API, the phone and a link; keep one copy.
       const seen = new Set<string>();
-      events = [deviceEvents, ...feedEvents].flat().filter((e) => {
+      events = [googleEvents, deviceEvents, ...feedEvents].flat().filter((e) => {
         const id = `${e.title}|${e.start.getTime()}`;
         if (seen.has(id)) return false;
         seen.add(id);
@@ -146,6 +158,7 @@ export function TripsProvider({ children }: { children: ReactNode }) {
       trips,
       noLocation: upcoming.filter((e) => !e.location),
       feedErrors,
+      googleError,
       updatedAt: new Date(),
     });
 
