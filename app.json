@@ -1,25 +1,60 @@
 {
   "expo": {
-    "name": "when-to-leave",
+    "name": "When to Leave",
     "slug": "when-to-leave",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
-    "userInterfaceStyle": "light",
+    "userInterfaceStyle": "automatic",
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.langchen.whentoleave"
     },
     "android": {
       "adaptiveIcon": {
-        "backgroundColor": "#E6F4FE",
+        "backgroundColor": "#0F766E",
         "foregroundImage": "./assets/android-icon-foreground.png",
         "backgroundImage": "./assets/android-icon-background.png",
         "monochromeImage": "./assets/android-icon-monochrome.png"
       },
-      "predictiveBackGestureEnabled": false
+      "predictiveBackGestureEnabled": false,
+      "package": "com.langchen.whentoleave",
+      "permissions": [
+        "READ_CALENDAR",
+        "ACCESS_COARSE_LOCATION",
+        "ACCESS_FINE_LOCATION"
+      ]
     },
     "web": {
-      "favicon": "./assets/favicon.png"
+      "favicon": "./assets/favicon.png",
+      "bundler": "metro"
+    },
+    "plugins": [
+      "expo-router",
+      "expo-status-bar",
+      "expo-font",
+      [
+        "expo-calendar",
+        {
+          "calendarPermission": "When to Leave reads your upcoming events to work out when you need to head out."
+        }
+      ],
+      [
+        "expo-location",
+        {
+          "locationWhenInUsePermission": "When to Leave uses your location to estimate travel time to your next event."
+        }
+      ],
+      [
+        "expo-notifications",
+        {
+          "color": "#0F766E"
+        }
+      ]
+    ],
+    "scheme": "whentoleave",
+    "experiments": {
+      "typedRoutes": true
     }
   }
 }
