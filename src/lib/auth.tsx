@@ -19,7 +19,7 @@ export interface Account {
 interface AuthContextValue {
   ready: boolean;
   account: Account | null;
-  /** Chose "Not now" on the welcome screen. */
+  /** Chose "Continue as guest" on the welcome screen. */
   guest: boolean;
   /** Supabase keys are set, so accounts work. */
   configured: boolean;

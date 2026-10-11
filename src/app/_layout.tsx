@@ -34,7 +34,7 @@ function Navigator() {
   const t = useTheme();
   const { ready, account, guest } = useAuth();
   if (!ready) return null;
-  // Signed in, or chose "Not now": the app. Otherwise: the welcome / sign-in screen.
+  // Signed in, or continuing as a guest: the app. Otherwise: the welcome / sign-in screen.
   const inApp = account !== null || guest;
 
   return (

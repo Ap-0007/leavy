@@ -4,7 +4,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { LogoPlaceholder } from '@/components/LogoPlaceholder';
 import { SignInButtons } from '@/components/SignInButtons';
-import { LinkButton } from '@/components/ui';
+import { Button } from '@/components/ui';
 import { useAuth } from '@/lib/auth';
 import { space, type, useTheme } from '@/theme';
 
@@ -46,9 +46,13 @@ export default function SignInScreen() {
         <Text style={[type.caption, { color: t.textMuted, textAlign: 'center' }]}>
           Google sign-in also asks to read your calendar. Apple sign-in uses the calendars on this iPhone.
         </Text>
-        <View style={{ alignItems: 'center' }}>
-          <LinkButton label="Not now" onPress={continueAsGuest} />
-        </View>
+        <Button
+          variant="secondary"
+          icon="person-outline"
+          label="Continue as guest"
+          onPress={continueAsGuest}
+          accessibilityHint="Uses Leavy without an account. You can sign in later in Connections."
+        />
       </View>
     </ScrollView>
   );

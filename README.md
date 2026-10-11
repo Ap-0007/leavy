@@ -46,7 +46,7 @@ npm install
 
 ### 2. Accounts and calendar sign-in (Supabase, Google, Apple)
 
-Sign-in is optional. Without it, choose **Not now** on the welcome screen and use calendar links instead. Sign-in uses native modules, so it needs a [development build](https://docs.expo.dev/develop/development-builds/introduction/), not Expo Go.
+Sign-in is optional. Without it, choose **Continue as guest** on the welcome screen and use calendar links instead. Sign-in uses native modules, so it needs a [development build](https://docs.expo.dev/develop/development-builds/introduction/), not Expo Go.
 
 **Supabase**
 
@@ -117,7 +117,7 @@ To use Google Calendar, add your Google account to the phone (iOS: Settings → 
 ```
 src/
   app/                 Expo Router screens
-    sign-in.tsx        Welcome screen: logo, Apple / Google sign-in or "Not now"
+    sign-in.tsx        Welcome screen: logo, Apple / Google sign-in or guest
     (tabs)/index.tsx        Upcoming: next-trip hero card + later trips
     (tabs)/connections.tsx  Account, Google / phone calendars, calendar links, demo mode
     (tabs)/preferences.tsx  Arrive early by, travel mode, alerts, look ahead
