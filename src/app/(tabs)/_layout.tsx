@@ -24,14 +24,6 @@ export default function TabsLayout() {
       <Tabs.Screen
         name="index"
         options={{
-          title: 'Home',
-          headerShown: false,
-          tabBarIcon: ({ color, focused }) => <Ionicons name={focused ? 'home' : 'home-outline'} size={22} color={color} />,
-        }}
-      />
-      <Tabs.Screen
-        name="upcoming"
-        options={{
           title: 'Upcoming',
           headerShown: false,
           tabBarIcon: ({ color, focused }) => <Ionicons name={focused ? 'navigate' : 'navigate-outline'} size={22} color={color} />,

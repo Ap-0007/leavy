@@ -2,10 +2,11 @@ import Ionicons from '@expo/vector-icons/Ionicons';
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
+import { LogoPlaceholder } from '@/components/LogoPlaceholder';
 import { SignInButtons } from '@/components/SignInButtons';
 import { LinkButton } from '@/components/ui';
 import { useAuth } from '@/lib/auth';
-import { radius, space, type, useTheme } from '@/theme';
+import { space, type, useTheme } from '@/theme';
 
 const POINTS = [
   { icon: 'calendar-outline', text: 'Loads your Google or Apple calendar automatically' },
@@ -23,8 +24,8 @@ export default function SignInScreen() {
       style={{ backgroundColor: t.bg }}
       contentContainerStyle={[styles.content, { paddingTop: insets.top + space.xxl * 2, paddingBottom: insets.bottom + space.xl }]}
     >
-      <View style={[styles.logo, { backgroundColor: t.primary }]}>
-        <Ionicons name="navigate" size={36} color={t.onPrimary} />
+      <View style={styles.logo}>
+        <LogoPlaceholder />
       </View>
       <Text style={[type.title, { color: t.text, textAlign: 'center' }]} accessibilityRole="header">
         Leavy
@@ -55,7 +56,7 @@ export default function SignInScreen() {
 
 const styles = StyleSheet.create({
   content: { flexGrow: 1, paddingHorizontal: space.xl, gap: space.sm },
-  logo: { width: 72, height: 72, borderRadius: radius.lg, alignSelf: 'center', alignItems: 'center', justifyContent: 'center', marginBottom: space.md },
+  logo: { alignSelf: 'center', marginBottom: space.md },
   points: { gap: space.lg, marginVertical: space.xxl },
   point: { flexDirection: 'row', alignItems: 'center', gap: space.md },
 });

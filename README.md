@@ -117,9 +117,8 @@ To use Google Calendar, add your Google account to the phone (iOS: Settings → 
 ```
 src/
   app/                 Expo Router screens
-    sign-in.tsx        Welcome screen: Apple / Google sign-in or "Not now"
-    (tabs)/index.tsx        Home: logo placeholder, greeting, next trip, shortcuts
-    (tabs)/upcoming.tsx     Upcoming: next-trip hero card + later trips
+    sign-in.tsx        Welcome screen: logo, Apple / Google sign-in or "Not now"
+    (tabs)/index.tsx        Upcoming: next-trip hero card + later trips
     (tabs)/connections.tsx  Account, Google / phone calendars, calendar links, demo mode
     (tabs)/preferences.tsx  Arrive early by, travel mode, alerts, look ahead
     trip/[id].tsx      Timeline, per-event mode / grace / alert overrides
