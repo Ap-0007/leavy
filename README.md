@@ -103,6 +103,8 @@ Treat these links like passwords. Google refreshes them every few hours, so new 
 
 **On your phone with Expo Go:** `npx expo start`, then scan the QR code with Expo Go. On school or work Wi-Fi that blocks devices from reaching each other, use `npm run tunnel`. It goes through a free Cloudflare tunnel (needs [`cloudflared`](https://developers.cloudflare.com/cloudflare-one/connections/connect-networks/downloads/)), because Expo's built-in `--tunnel` currently fails. Until you add a calendar link, the app shows sample events.
 
+**On the Android emulator:** start the emulator, then run `npm run android`. It serves the app on `localhost` (forwarded into the emulator with `adb reverse`), because firewalls and campus Wi-Fi often block the emulator from reaching your computer's network address. Leave alerts are off in Expo Go on Android; they need a development build.
+
 **Sign-in and real calendars on your phone:** Google/Apple sign-in and `expo-calendar` need a [development build](https://docs.expo.dev/develop/development-builds/introduction/):
 
 ```bash

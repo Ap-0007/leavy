@@ -1,4 +1,4 @@
-import * as Notifications from 'expo-notifications';
+import { isRunningInExpoGo } from 'expo';
 import { Platform } from 'react-native';
 
 import type { Trip } from '../types';
@@ -6,9 +6,20 @@ import { formatMinutes, formatTime, MODE_NOUN } from './format';
 
 const PREFIX = 'wtl-';
 const CHANNEL = 'leave-alerts';
-const supported = Platform.OS !== 'web';
 
-if (supported) {
+type NotificationsModule = typeof import('expo-notifications');
+
+/**
+ * Expo Go on Android throws as soon as expo-notifications is imported (push support was removed
+ * in SDK 53), which breaks every route that imports this file. Skip alerts there, and on web.
+ */
+const Notifications: NotificationsModule | null =
+  Platform.OS === 'web' || (Platform.OS === 'android' && isRunningInExpoGo())
+    ? null
+    : // eslint-disable-next-line @typescript-eslint/no-require-imports
+      require('expo-notifications');
+
+if (Notifications) {
   Notifications.setNotificationHandler({
     handleNotification: async () => ({
       shouldPlaySound: true,
@@ -20,7 +31,7 @@ if (supported) {
 }
 
 export async function ensureNotificationPermission(): Promise<boolean> {
-  if (!supported) return false;
+  if (!Notifications) return false;
   try {
     if (Platform.OS === 'android') {
       // Android 13+ only shows the permission prompt once a channel exists.
@@ -40,7 +51,7 @@ export async function ensureNotificationPermission(): Promise<boolean> {
 
 /** Replaces every alert this app scheduled with fresh ones for the given trips. */
 export async function syncLeaveAlerts(trips: Trip[], headsUpMin: number): Promise<void> {
-  if (!supported) return;
+  if (!Notifications) return;
   const scheduled = await Notifications.getAllScheduledNotificationsAsync();
   await Promise.all(
     scheduled
@@ -56,13 +67,13 @@ export async function syncLeaveAlerts(trips: Trip[], headsUpMin: number): Promis
     const id = `${PREFIX}${trip.event.key}`;
 
     if (headsUpMin > 0 && leaveAt - headsUpMin * 60_000 > now) {
-      await schedule(`${id}-heads`, leaveAt - headsUpMin * 60_000, {
+      await schedule(Notifications, `${id}-heads`, leaveAt - headsUpMin * 60_000, {
         title: `Leave in ${headsUpMin} min for ${trip.event.title}`,
         body: `Head out at ${formatTime(trip.route.leaveBy)} · ${travel}`,
       });
     }
     if (leaveAt > now) {
-      await schedule(`${id}-leave`, leaveAt, {
+      await schedule(Notifications, `${id}-leave`, leaveAt, {
         title: `Time to leave for ${trip.event.title}`,
         body: `${travel} · arrive by ${formatTime(trip.arriveBy)}`,
       });
@@ -70,12 +81,12 @@ export async function syncLeaveAlerts(trips: Trip[], headsUpMin: number): Promis
   }
 }
 
-function schedule(identifier: string, at: number, content: { title: string; body: string }) {
-  return Notifications.scheduleNotificationAsync({
+function schedule(N: NotificationsModule, identifier: string, at: number, content: { title: string; body: string }) {
+  return N.scheduleNotificationAsync({
     identifier,
     content: { ...content, data: { url: '/' } },
     trigger: {
-      type: Notifications.SchedulableTriggerInputTypes.DATE,
+      type: N.SchedulableTriggerInputTypes.DATE,
       date: at,
       channelId: Platform.OS === 'android' ? CHANNEL : undefined,
     },
