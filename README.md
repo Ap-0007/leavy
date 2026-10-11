@@ -2,7 +2,7 @@
 
 A calm little mobile app that reads your calendar, checks live travel time with Google Maps, and tells you **when to leave** for each event, including a grace period so you arrive a few minutes early.
 
-- **Calendars:** reads Apple/iCloud calendars *and* any Google account added to your phone, through the device calendar (`expo-calendar`).
+- **Calendars:** paste a private **calendar link** (Google "secret iCal address" or iCloud share link), which works in Expo Go. In a development build, it can also read the phone's calendars directly (`expo-calendar`).
 - **Travel time:** uses the Google **Routes API**, with live traffic for driving and real schedules for transit. Walking and cycling are supported too.
 - **Grace period:** set a global "arrive N min early", and override it per event.
 - **Alerts:** sends a local notification when it's time to leave, plus an optional heads-up. Alerts can be muted per event.
@@ -43,9 +43,18 @@ npm install
 
 6. Restart `npx expo start` so the key is picked up. `.env` and `.env.local` are git-ignored.
 
-### 2. Run it
+### 2. Add your calendar
 
-**Quick look (demo data):** `npx expo start`, then open it in Expo Go or press `w` for web. Expo Go can't read calendars, so the app switches to demo mode automatically.
+In the app, open **Settings → Your calendar** and paste a link. The app shows these steps too:
+
+- **Google Calendar** (on a computer): calendar.google.com → ⚙ Settings → your calendar → *Integrate calendar* → copy **Secret address in iCal format**.
+- **iCloud** (on iPhone): Calendar app → Calendars → ⓘ next to a calendar → turn on **Public Calendar** → *Share Link…* → Copy.
+
+Treat these links like passwords. Google refreshes them every few hours, so new events can lag. Browsers block calendar links, so use the phone.
+
+### 3. Run it
+
+**On your phone with Expo Go:** `npx expo start`, then scan the QR code with Expo Go. On school or work Wi-Fi that blocks devices from reaching each other, use `npx expo start --tunnel`. Until you add a calendar link, the app shows sample events.
 
 **Real calendars on your phone:** `expo-calendar` needs a [development build](https://docs.expo.dev/develop/development-builds/introduction/):
 
@@ -67,6 +76,8 @@ src/
   components/          ModePicker, GraceStepper, StatusPill, TripViews, shared UI
   lib/
     calendar.ts        Device calendars → events
+    ics.ts             iCal parser: repeating events, moved/cancelled ones, timezones
+    icsFeed.ts         Calendar links: download, cache, validate
     routes.ts          Google Routes API (traffic-aware drive, transit arrive-by)
     plan.ts            Leave-time status rules
     notifications.ts   Local leave alerts
