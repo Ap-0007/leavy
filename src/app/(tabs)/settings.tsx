@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
 
+import { CalendarLinks } from '@/components/CalendarLinks';
 import { GraceStepper } from '@/components/GraceStepper';
 import { ModePicker } from '@/components/ModePicker';
 import { Card, Chip, SectionHeader, SwitchRow } from '@/components/ui';
@@ -32,7 +33,15 @@ export default function SettingsScreen() {
   };
 
   return (
-    <ScrollView style={{ backgroundColor: t.bg }} contentContainerStyle={styles.content}>
+    <ScrollView
+      style={{ backgroundColor: t.bg }}
+      contentContainerStyle={styles.content}
+      keyboardShouldPersistTaps="handled"
+      automaticallyAdjustKeyboardInsets
+    >
+      <SectionHeader title="Your calendar" />
+      <CalendarLinks />
+
       <SectionHeader title="Arrive early by" />
       <Card>
         <GraceStepper value={settings.graceMin} onChange={(graceMin) => update({ graceMin })} />
@@ -71,7 +80,7 @@ export default function SettingsScreen() {
         ))}
       </View>
 
-      <SectionHeader title="Calendars" />
+      <SectionHeader title="Phone calendars" />
       <Card style={{ gap: space.sm }}>
         {calendars.length > 0 ? (
           calendars.map((c) => (
@@ -87,7 +96,7 @@ export default function SettingsScreen() {
         ) : (
           <Text style={[type.body, { color: t.textMuted }]}>
             {calendarAccess === 'unavailable'
-              ? 'Calendars can’t be read in this build. Use a development build on your phone.'
+              ? 'Expo Go can’t read the phone’s calendar. Use a calendar link above instead.'
               : calendarAccess === 'denied'
                 ? 'Calendar access is off. Turn it on in your phone’s Settings.'
                 : 'No calendars found.'}
@@ -102,7 +111,11 @@ export default function SettingsScreen() {
       <Card>
         <SwitchRow
           label="Demo mode"
-          helper={usingDemo && !settings.demoMode ? 'On automatically because calendars are unavailable here.' : 'Use sample events and made-up travel times.'}
+          helper={
+            usingDemo && !settings.demoMode
+              ? 'On automatically until you add a calendar.'
+              : 'Use sample events and made-up travel times.'
+          }
           value={settings.demoMode}
           onChange={(demoMode) => update({ demoMode })}
         />

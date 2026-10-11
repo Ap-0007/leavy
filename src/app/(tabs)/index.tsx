@@ -1,4 +1,5 @@
 import Ionicons from '@expo/vector-icons/Ionicons';
+import { router } from 'expo-router';
 import { Linking, RefreshControl, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
@@ -16,7 +17,8 @@ export default function UpcomingScreen() {
   const insets = useSafeAreaInsets();
   const now = useNow();
   const { settings, update } = useSettings();
-  const { loading, refreshing, trips, noLocation, usingDemo, calendarAccess, locationAccess, updatedAt, refresh } = useTrips();
+  const { loading, refreshing, trips, noLocation, usingDemo, calendarAccess, locationAccess, feedErrors, updatedAt, refresh } = useTrips();
+  const brokenFeeds = Object.keys(feedErrors).length;
 
   const [next, ...later] = trips;
 
@@ -43,14 +45,18 @@ export default function UpcomingScreen() {
           icon="flask-outline"
           title="Showing sample events"
           body={
-            calendarAccess === 'unavailable'
-              ? 'Reading your calendar needs a development build (Expo Go can’t). See the README.'
-              : 'Demo mode is on, so travel times are made up.'
+            settings.demoMode
+              ? 'Demo mode is on, so travel times are made up.'
+              : 'Add your Google or iCloud calendar link in Settings to see your real events.'
           }
-          action={settings.demoMode ? { label: 'Use my calendar', onPress: () => update({ demoMode: false }) } : undefined}
+          action={
+            settings.demoMode
+              ? { label: 'Use my calendar', onPress: () => update({ demoMode: false }) }
+              : { label: 'Add calendar link', onPress: () => router.push('/settings') }
+          }
         />
       ) : null}
-      {!usingDemo && calendarAccess === 'denied' ? (
+      {!usingDemo && calendarAccess === 'denied' && settings.calendarFeeds.length === 0 ? (
         <Banner
           tone="warn"
           icon="calendar-outline"
@@ -59,7 +65,16 @@ export default function UpcomingScreen() {
           action={{ label: 'Open Settings', onPress: () => Linking.openSettings() }}
         />
       ) : null}
-      {!usingDemo && calendarAccess === 'granted' && locationAccess === 'denied' ? (
+      {!usingDemo && brokenFeeds > 0 ? (
+        <Banner
+          tone="warn"
+          icon="link-outline"
+          title={brokenFeeds === 1 ? 'A calendar link isn’t loading' : `${brokenFeeds} calendar links aren’t loading`}
+          body={Object.values(feedErrors)[0]}
+          action={{ label: 'Check in Settings', onPress: () => router.push('/settings') }}
+        />
+      ) : null}
+      {!usingDemo && locationAccess === 'denied' ? (
         <Banner
           tone="warn"
           icon="location-outline"
