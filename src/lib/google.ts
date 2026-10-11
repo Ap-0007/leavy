@@ -1,4 +1,4 @@
-import { Platform } from 'react-native';
+import { Platform, TurboModuleRegistry } from 'react-native';
 
 // Native Google Sign-In. The same Google session signs you in to Leavy (through Supabase)
 // and lets the app read Google Calendar with an access token.
@@ -11,19 +11,19 @@ const iosClientId = process.env.EXPO_PUBLIC_GOOGLE_IOS_CLIENT_ID;
 type GoogleModule = typeof import('@react-native-google-signin/google-signin');
 let cached: GoogleModule | null | undefined;
 
-/** The native module is missing in Expo Go and on web, so load it lazily instead of crashing on import. */
+/**
+ * The native module is missing in Expo Go and on web. Check for it before importing the
+ * library, which throws (and logs a red error in development) when the module isn't there.
+ */
 function load(): GoogleModule | null {
   if (cached !== undefined) return cached;
   cached = null;
   if (Platform.OS === 'web' || !webClientId || (Platform.OS === 'ios' && !iosClientId)) return null;
-  try {
-    // eslint-disable-next-line @typescript-eslint/no-require-imports
-    const mod: GoogleModule = require('@react-native-google-signin/google-signin');
-    mod.GoogleSignin.configure({ webClientId, iosClientId, scopes: [CALENDAR_SCOPE] });
-    cached = mod;
-  } catch {
-    // Expo Go: no native module. Sign-in needs a development build.
-  }
+  if (!TurboModuleRegistry.get('RNGoogleSignin')) return null;
+  // eslint-disable-next-line @typescript-eslint/no-require-imports
+  const mod: GoogleModule = require('@react-native-google-signin/google-signin');
+  mod.GoogleSignin.configure({ webClientId, iosClientId, scopes: [CALENDAR_SCOPE] });
+  cached = mod;
   return cached;
 }
 
