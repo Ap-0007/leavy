@@ -8,7 +8,8 @@
     "userInterfaceStyle": "automatic",
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.langchen.leavy"
+      "bundleIdentifier": "com.langchen.leavy",
+      "usesAppleSignIn": true
     },
     "android": {
       "adaptiveIcon": {
@@ -50,7 +51,8 @@
         {
           "color": "#0F766E"
         }
-      ]
+      ],
+      "expo-apple-authentication"
     ],
     "scheme": "leavy",
     "experiments": {
