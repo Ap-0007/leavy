@@ -77,10 +77,21 @@ async function ensureSignedIn(mod: GoogleModule): Promise<boolean> {
   return res.type === 'success';
 }
 
-export async function googleAccessToken(): Promise<string> {
-  const mod = load();
-  if (!mod || !(await ensureSignedIn(mod))) throw new Error('Google Calendar is disconnected. Connect it again in Connections.');
-  return (await mod.GoogleSignin.getTokens()).accessToken;
+let pendingToken: Promise<string> | null = null;
+
+/**
+ * Calendars are fetched in parallel, but the native module rejects a getTokens() call while
+ * another is still running, so concurrent callers share one request.
+ */
+export function googleAccessToken(): Promise<string> {
+  pendingToken ??= (async () => {
+    const mod = load();
+    if (!mod || !(await ensureSignedIn(mod))) throw new Error('Google Calendar is disconnected. Connect it again in Connections.');
+    return (await mod.GoogleSignin.getTokens()).accessToken;
+  })().finally(() => {
+    pendingToken = null;
+  });
+  return pendingToken;
 }
 
 /** Android caches tokens; drop a rejected one so the next getTokens() fetches a fresh one. */
