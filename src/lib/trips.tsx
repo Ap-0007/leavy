@@ -40,9 +40,16 @@ const TripsContext = createContext<TripsContextValue | null>(null);
 async function currentPosition(): Promise<{ access: LocationAccess; origin: LatLng | null }> {
   const perm = await Location.requestForegroundPermissionsAsync();
   if (!perm.granted) return { access: 'denied', origin: null };
+  // A recent fix, then a fresh one. If the phone can't get a fix right now (indoors, emulator),
+  // fall back to the last known position of any age rather than giving up on travel times.
   const pos =
     (await Location.getLastKnownPositionAsync({ maxAge: 2 * 60_000, requiredAccuracy: 200 })) ??
-    (await Location.getCurrentPositionAsync({ accuracy: Location.Accuracy.Balanced }));
+    (await Location.getCurrentPositionAsync({ accuracy: Location.Accuracy.Balanced }).catch((e) => {
+      console.warn('Current location unavailable, using last known', e);
+      return null;
+    })) ??
+    (await Location.getLastKnownPositionAsync());
+  if (!pos) return { access: 'granted', origin: null };
   return { access: 'granted', origin: { latitude: pos.coords.latitude, longitude: pos.coords.longitude } };
 }
 
@@ -137,7 +144,12 @@ export function TripsProvider({ children }: { children: ReactNode }) {
 
           if (usingDemo) return { ...trip, route: demoRoute(event.key, mode, arriveBy) };
           if (!hasApiKey) return { ...trip, error: 'Add a Google Maps API key to get travel times.' };
-          if (!origin) return { ...trip, error: 'Turn on location to get travel times.' };
+          if (!origin) {
+            return {
+              ...trip,
+              error: locationAccess === 'granted' ? 'Couldn’t find your location. Pull down to try again.' : 'Turn on location to get travel times.',
+            };
+          }
           try {
             return { ...trip, route: await getRoute(origin, event.location!, mode, arriveBy) };
           } catch (e) {
@@ -171,6 +183,8 @@ export function TripsProvider({ children }: { children: ReactNode }) {
 
   // Recompute whenever settings change (grace period, mode, calendars…).
   useEffect(() => {
+    // refresh() fetches from calendars and Maps; setting `refreshing` up front is intended.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     if (ready) refresh();
   }, [ready, refresh]);
 
