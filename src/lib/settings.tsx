@@ -13,6 +13,8 @@ export interface Settings {
   lookAheadHours: number;
   /** null = all calendars. */
   calendarIds: string[] | null;
+  /** Private iCal links (Google "secret address", iCloud share link). Work without a dev build. */
+  calendarFeeds: string[];
   demoMode: boolean;
   /** Per-event overrides, keyed by CalEvent.key. */
   modeOverrides: Record<string, TravelMode>;
@@ -28,6 +30,7 @@ export const DEFAULT_SETTINGS: Settings = {
   headsUpMin: 10,
   lookAheadHours: 12,
   calendarIds: null,
+  calendarFeeds: [],
   demoMode: false,
   modeOverrides: {},
   graceOverrides: {},
