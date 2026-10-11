@@ -15,7 +15,7 @@ const PROVIDER_NAMES: Record<string, string> = { google: 'Google', apple: 'Apple
 /** Connections → Account: who's signed in, or the sign-in buttons for guests. */
 export function AccountCard() {
   const t = useTheme();
-  const { account, signOut } = useAuth();
+  const { account, guest, signOut } = useAuth();
 
   if (!account) {
     return (
@@ -24,6 +24,12 @@ export function AccountCard() {
           Sign in to load your calendar automatically and keep your settings when you switch phones.
         </Text>
         <SignInButtons />
+        {guest ? (
+          <View style={{ alignItems: 'center' }}>
+            {/* signOut also clears guest mode, which brings back the welcome screen. */}
+            <LinkButton label="Back to the welcome screen" onPress={() => signOut()} />
+          </View>
+        ) : null}
       </Card>
     );
   }
