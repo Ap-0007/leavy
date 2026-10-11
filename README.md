@@ -105,6 +105,8 @@ Treat these links like passwords. Google refreshes them every few hours, so new 
 
 **On the Android emulator:** start the emulator, then run `npm run android`. It serves the app on `localhost` (forwarded into the emulator with `adb reverse`), because firewalls and campus Wi-Fi often block the emulator from reaching your computer's network address. Leave alerts are off in Expo Go on Android; they need a development build.
 
+**Android development build:** `npx expo run:android` builds and installs Leavy on the running emulator. It needs the Android SDK (`ANDROID_HOME`) and **Java 17** (`JAVA_HOME`); newer Java versions such as 25 fail in the CMake steps with "A restricted method in java.lang.System has been called".
+
 **Sign-in and real calendars on your phone:** Google/Apple sign-in and `expo-calendar` need a [development build](https://docs.expo.dev/develop/development-builds/introduction/):
 
 ```bash
