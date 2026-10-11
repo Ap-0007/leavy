@@ -4,6 +4,7 @@ import { Linking, ScrollView, StyleSheet, Text, View } from 'react-native';
 
 import { GraceStepper } from '@/components/GraceStepper';
 import { ModePicker } from '@/components/ModePicker';
+import { OriginPicker } from '@/components/OriginPicker';
 import { StatusPill } from '@/components/StatusPill';
 import { countdownText } from '@/components/TripViews';
 import { Button, Card, LinkButton, SectionHeader, SwitchRow, type IconName } from '@/components/ui';
@@ -15,7 +16,7 @@ import { useTrips } from '@/lib/trips';
 import { radius, space, type, useTheme } from '@/theme';
 import type { Trip } from '@/types';
 
-type OverrideField = 'modeOverrides' | 'graceOverrides' | 'notifyOverrides';
+type OverrideField = 'modeOverrides' | 'graceOverrides' | 'notifyOverrides' | 'originOverrides';
 
 export default function TripScreen() {
   const t = useTheme();
@@ -79,11 +80,18 @@ export default function TripScreen() {
           <Button
             icon="navigate"
             label="Open directions"
-            onPress={() => Linking.openURL(mapsUrl(event.location!, trip.mode))}
+            onPress={() => Linking.openURL(mapsUrl(event.location!, trip.mode, trip.origin))}
             accessibilityHint="Opens Google Maps with directions to this event"
           />
         </View>
       ) : null}
+
+      <SectionHeader title="Leaving from" aside={trip.origin ? 'Just this event' : 'Default'} />
+      <OriginPicker
+        value={trip.origin}
+        recent={[...new Set(Object.values(settings.originOverrides))].reverse()}
+        onChange={(address) => setOverride('originOverrides', address)}
+      />
 
       <SectionHeader title="Getting there by" aside={settings.modeOverrides[key] ? 'Just this event' : 'Default'} />
       <ModePicker value={trip.mode} onChange={(m) => setOverride('modeOverrides', m === settings.defaultMode ? undefined : m)} />
@@ -137,7 +145,13 @@ function Timeline({ trip }: { trip: Trip }) {
   const travelDetail = [formatDistance(route.distanceMeters), route.transitSummary].filter(Boolean).join(' · ');
 
   const steps: { icon: IconName; time?: string; title: string; detail?: string; strong?: boolean }[] = [
-    { icon: 'home-outline', time: formatTime(route.leaveBy), title: 'Leave', strong: true },
+    {
+      icon: trip.origin ? 'home-outline' : 'locate-outline',
+      time: formatTime(route.leaveBy),
+      title: 'Leave',
+      detail: trip.origin ?? 'From your current location',
+      strong: true,
+    },
     {
       icon: MODE_ICON[trip.mode],
       title: `${formatMinutes(route.durationSec / 60)} ${MODE_NOUN[trip.mode]}`,

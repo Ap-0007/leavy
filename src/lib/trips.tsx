@@ -140,18 +140,20 @@ export function TripsProvider({ children }: { children: ReactNode }) {
           const graceMin = settings.graceOverrides[event.key] ?? settings.graceMin;
           const arriveBy = new Date(event.start.getTime() - graceMin * 60_000);
           const notify = settings.notifyOverrides[event.key] ?? settings.notifications;
-          const trip: Trip = { event, mode, graceMin, arriveBy, notify };
+          const custom = settings.originOverrides[event.key];
+          const trip: Trip = { event, mode, graceMin, arriveBy, notify, origin: custom };
 
           if (usingDemo) return { ...trip, route: demoRoute(event.key, mode, arriveBy) };
           if (!hasApiKey) return { ...trip, error: 'Add a Google Maps API key to get travel times.' };
-          if (!origin) {
+          const from = custom ?? origin;
+          if (!from) {
             return {
               ...trip,
               error: locationAccess === 'granted' ? 'Couldn’t find your location. Pull down to try again.' : 'Turn on location to get travel times.',
             };
           }
           try {
-            return { ...trip, route: await getRoute(origin, event.location!, mode, arriveBy) };
+            return { ...trip, route: await getRoute(from, event.location!, mode, arriveBy) };
           } catch (e) {
             return { ...trip, error: e instanceof Error ? e.message : 'Could not get a route.' };
           }

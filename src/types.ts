@@ -29,6 +29,8 @@ export interface Trip {
   arriveBy: Date;
   /** Whether leave alerts are scheduled for this trip. */
   notify: boolean;
+  /** Custom start address for this event; undefined = the phone's current location. */
+  origin?: string;
   route?: RouteInfo;
   error?: string;
 }

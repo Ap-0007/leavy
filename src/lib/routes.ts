@@ -66,13 +66,15 @@ async function computeRoute(body: object): Promise<ApiRoute> {
 const CACHE_MS = 5 * 60_000;
 const cache = new Map<string, { at: number; info: RouteInfo }>();
 
-export async function getRoute(origin: LatLng, destination: string, mode: TravelMode, arriveBy: Date): Promise<RouteInfo> {
-  const key = [origin.latitude.toFixed(3), origin.longitude.toFixed(3), destination, mode, arriveBy.getTime()].join('|');
+/** `origin` is the phone's position, or an address the user typed for this event. */
+export async function getRoute(origin: LatLng | string, destination: string, mode: TravelMode, arriveBy: Date): Promise<RouteInfo> {
+  const from = typeof origin === 'string' ? origin : `${origin.latitude.toFixed(3)},${origin.longitude.toFixed(3)}`;
+  const key = [from, destination, mode, arriveBy.getTime()].join('|');
   const hit = cache.get(key);
   if (hit && Date.now() - hit.at < CACHE_MS) return hit.info;
 
   const base = {
-    origin: { location: { latLng: origin } },
+    origin: typeof origin === 'string' ? { address: origin } : { location: { latLng: origin } },
     destination: { address: destination },
     travelMode: API_MODE[mode],
   };

@@ -16,6 +16,7 @@ const SYNCED = [
   'modeOverrides',
   'graceOverrides',
   'notifyOverrides',
+  'originOverrides',
 ] as const satisfies readonly (keyof Settings)[];
 
 type SyncedSettings = Pick<Settings, (typeof SYNCED)[number]>;

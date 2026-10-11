@@ -23,6 +23,8 @@ export interface Settings {
   graceOverrides: Record<string, number>;
   /** Per-event alert switch; missing = follow the global `notifications` setting. */
   notifyOverrides: Record<string, boolean>;
+  /** Per-event start address; missing = leave from wherever the phone is. */
+  originOverrides: Record<string, string>;
 }
 
 const DEFAULT_SETTINGS: Settings = {
@@ -38,6 +40,7 @@ const DEFAULT_SETTINGS: Settings = {
   modeOverrides: {},
   graceOverrides: {},
   notifyOverrides: {},
+  originOverrides: {},
 };
 
 const STORAGE_KEY = 'wtl.settings.v1';

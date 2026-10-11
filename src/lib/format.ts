@@ -50,7 +50,8 @@ const GMAPS_MODE: Record<TravelMode, string> = {
   bike: 'bicycling',
 };
 
-export function mapsUrl(destination: string, mode: TravelMode): string {
-  const q = new URLSearchParams({ api: '1', destination, travelmode: GMAPS_MODE[mode] });
+/** Without an origin, Google Maps starts from the phone's current location. */
+export function mapsUrl(destination: string, mode: TravelMode, origin?: string): string {
+  const q = new URLSearchParams({ api: '1', destination, travelmode: GMAPS_MODE[mode], ...(origin ? { origin } : {}) });
   return `https://www.google.com/maps/dir/?${q.toString()}`;
 }
