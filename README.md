@@ -47,7 +47,11 @@ npm install
 
 In the app, open **Settings → Your calendar** and paste a link. The app shows these steps too:
 
-- **Google Calendar** (on a computer): calendar.google.com → ⚙ Settings → your calendar → *Integrate calendar* → copy **Secret address in iCal format**.
+- **Google Calendar** (desktop site only):
+  1. Go to **calendar.google.com/calendar/r/settings**. On iPhone, open it in Safari → **aA** → *Request Desktop Website*.
+  2. In the left menu, scroll to **Settings for my calendars** and click your name.
+  3. On the right, scroll to **Integrate calendar** and copy **Secret address in iCal format** (ends in `/basic.ics`).
+  4. Can't find it? School and work accounts often have it turned off. Use a personal Gmail calendar or iCloud instead.
 - **iCloud** (on iPhone): Calendar app → Calendars → ⓘ next to a calendar → turn on **Public Calendar** → *Share Link…* → Copy.
 
 Treat these links like passwords. Google refreshes them every few hours, so new events can lag. Browsers block calendar links, so use the phone.

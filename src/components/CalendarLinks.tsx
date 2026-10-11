@@ -9,18 +9,20 @@ import { font, radius, space, type, useTheme } from '../theme';
 import { Button, Card, tapFeedback } from './ui';
 
 const GOOGLE_STEPS = [
-  'On a computer, open calendar.google.com. (The phone app doesn’t have this setting. On iPhone you can use Safari → aA → Request Desktop Website.)',
-  'Click the gear icon (top right), then Settings.',
-  'On the left, under “Settings for my calendars”, click your calendar.',
-  'Scroll down to “Integrate calendar” and copy “Secret address in iCal format”.',
-  'Send it to your phone (Notes, email to yourself…) and paste it below.',
+  // Zero-width spaces let the long address wrap at its slashes.
+  'On a computer, go to:\ncalendar.google.com/\u200bcalendar/\u200br/\u200bsettings\n\nOn iPhone: open it in Safari, tap aA in the address bar → Request Desktop Website, then reload. (The Google Calendar app doesn’t have this setting.)',
+  'In the menu on the left, scroll down to “Settings for my calendars”. It’s below General, Add calendar and Import & export.',
+  'Under it, click your name. That’s your main calendar.',
+  'On the right, scroll almost to the bottom to “Integrate calendar”.',
+  'Copy “Secret address in iCal format” (it ends in /basic.ics). Send it to your phone, for example in Notes or an email to yourself, and paste it below.',
 ];
 
 const ICLOUD_STEPS = [
-  'On your iPhone, open the Calendar app and tap Calendars at the bottom.',
+  'On your iPhone, open the Calendar app.',
+  'Tap Calendars at the bottom of the screen.',
   'Tap the ⓘ button next to the calendar you want.',
   'Turn on Public Calendar, then tap Share Link… → Copy.',
-  'Come back here and paste it below.',
+  'Come back to this app and paste it below.',
 ];
 
 /** Settings section for adding private iCal links (Google / iCloud). */
@@ -167,7 +169,7 @@ export function CalendarLinks() {
           title="Google Calendar"
           icon="logo-google"
           steps={GOOGLE_STEPS}
-          note="New events can take a few hours to show up. That’s how often Google updates these links."
+          note="Can’t find “Integrate calendar”? School and work accounts often have it turned off. Use a personal Gmail calendar or the iCloud steps instead. New events can take a few hours to show up."
           open={open === 'google'}
           onToggle={() => setOpen(open === 'google' ? null : 'google')}
         />
