@@ -103,31 +103,34 @@ export function TripRow({ trip, now }: { trip: Trip; now: number }) {
         accessibilityLabel={`${event.title}, starts ${formatTime(event.start)}. ${
           route ? `Leave by ${formatTime(route.leaveBy)}.` : trip.error ?? ''
         }${trip.notify ? '' : ' Alerts off.'}`}
-        style={({ pressed }) => [styles.row, { backgroundColor: t.surface, borderColor: t.border }, pressed && { opacity: 0.8 }]}
       >
-        <View style={styles.timeCol}>
-          <Text style={[type.overline, { color: t.textMuted }]}>Leave</Text>
-          <Text style={[type.heading, { color: t.text, fontVariant: ['tabular-nums'] }]}>
-            {route ? formatTime(route.leaveBy) : '—'}
-          </Text>
-        </View>
-        <View style={[styles.divider, { backgroundColor: t.border }]} />
-        <View style={{ flex: 1, gap: 2 }}>
-          <Text style={[type.bodyStrong, { color: t.text }]} numberOfLines={1}>
-            {event.title}
-          </Text>
-          <Text style={[type.caption, { color: t.textMuted }]} numberOfLines={1}>
-            {formatTime(event.start)} · {event.location}
-          </Text>
-          <View style={[styles.rowBetween, { marginTop: space.xs }]}>
-            <StatusPill status={timing.status} />
-            <View style={styles.icons}>
-              {!trip.notify ? <Ionicons name="notifications-off-outline" size={18} color={t.textMuted} /> : null}
-              <Ionicons name={MODE_ICON[trip.mode]} size={18} color={t.textMuted} />
+        {({ pressed }) => (
+          <View style={[styles.row, { backgroundColor: t.surface, borderColor: t.border }, pressed && { opacity: 0.8 }]}>
+            <View style={styles.timeCol}>
+              <Text style={[type.overline, { color: t.textMuted }]}>Leave</Text>
+              <Text style={[type.bodyStrong, { color: t.text, fontVariant: ['tabular-nums'] }]} numberOfLines={1} adjustsFontSizeToFit>
+                {route ? formatTime(route.leaveBy) : '—'}
+              </Text>
             </View>
+            <View style={[styles.divider, { backgroundColor: t.border }]} />
+            <View style={{ flex: 1, gap: 2 }}>
+              <Text style={[type.bodyStrong, { color: t.text }]} numberOfLines={1}>
+                {event.title}
+              </Text>
+              <Text style={[type.caption, { color: t.textMuted }]} numberOfLines={1}>
+                {formatTime(event.start)} · {event.location}
+              </Text>
+              <View style={[styles.rowBetween, { marginTop: space.xs }]}>
+                <StatusPill status={timing.status} />
+                <View style={styles.icons}>
+                  {!trip.notify ? <Ionicons name="notifications-off-outline" size={18} color={t.textMuted} /> : null}
+                  <Ionicons name={MODE_ICON[trip.mode]} size={18} color={t.textMuted} />
+                </View>
+              </View>
+            </View>
+            <Ionicons name="chevron-forward" size={18} color={t.textMuted} />
           </View>
-        </View>
-        <Ionicons name="chevron-forward" size={18} color={t.textMuted} />
+        )}
       </Pressable>
     </Link>
   );
@@ -148,7 +151,7 @@ const styles = StyleSheet.create({
     marginBottom: space.sm,
     minHeight: 64,
   },
-  timeCol: { width: 76, alignItems: 'flex-start' },
+  timeCol: { width: 84, alignItems: 'flex-start' },
   divider: { width: StyleSheet.hairlineWidth, alignSelf: 'stretch' },
   icons: { flexDirection: 'row', gap: space.sm },
 });
