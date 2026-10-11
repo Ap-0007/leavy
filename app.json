@@ -1,14 +1,14 @@
 {
   "expo": {
-    "name": "When to Leave",
-    "slug": "when-to-leave",
+    "name": "Leavy",
+    "slug": "leavy",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "automatic",
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.langchen.whentoleave"
+      "bundleIdentifier": "com.langchen.leavy"
     },
     "android": {
       "adaptiveIcon": {
@@ -18,7 +18,7 @@
         "monochromeImage": "./assets/android-icon-monochrome.png"
       },
       "predictiveBackGestureEnabled": false,
-      "package": "com.langchen.whentoleave",
+      "package": "com.langchen.leavy",
       "permissions": [
         "READ_CALENDAR",
         "ACCESS_COARSE_LOCATION",
@@ -36,13 +36,13 @@
       [
         "expo-calendar",
         {
-          "calendarPermission": "When to Leave reads your upcoming events to work out when you need to head out."
+          "calendarPermission": "Leavy reads your upcoming events to work out when you need to head out."
         }
       ],
       [
         "expo-location",
         {
-          "locationWhenInUsePermission": "When to Leave uses your location to estimate travel time to your next event."
+          "locationWhenInUsePermission": "Leavy uses your location to estimate travel time to your next event."
         }
       ],
       [
@@ -52,7 +52,7 @@
         }
       ]
     ],
-    "scheme": "whentoleave",
+    "scheme": "leavy",
     "experiments": {
       "typedRoutes": true
     }

@@ -1,4 +1,4 @@
-# When to Leave
+# Leavy
 
 A calm little mobile app that reads your calendar, checks live travel time with Google Maps, and tells you **when to leave** for each event, including a grace period so you arrive a few minutes early.
 
@@ -34,7 +34,7 @@ npm install
 1. Go to <https://console.cloud.google.com/>, create a project, and enable billing. Google's free monthly credit covers personal use.
 2. Under **APIs & Services → Library**, enable **Routes API**.
 3. Under **APIs & Services → Credentials**, create an **API key**.
-4. Restrict the key. Under *API restrictions*, allow only **Routes API**. Under *Application restrictions*, add your app's bundle ID (`com.langchen.whentoleave`) once you ship it. The key ships inside the app, so restricting it matters.
+4. Restrict the key. Under *API restrictions*, allow only **Routes API**. Under *Application restrictions*, add your app's bundle ID (`com.langchen.leavy`) once you ship it. The key ships inside the app, so restricting it matters.
 5. Copy `.env.example` to `.env.local` and paste the key:
 
    ```
