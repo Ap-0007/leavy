@@ -3,7 +3,7 @@ import { Platform, TurboModuleRegistry } from 'react-native';
 // Native Google Sign-In. The same Google session signs you in to Leavy (through Supabase)
 // and lets the app read Google Calendar with an access token.
 
-export const CALENDAR_SCOPE = 'https://www.googleapis.com/auth/calendar.readonly';
+const CALENDAR_SCOPE = 'https://www.googleapis.com/auth/calendar.readonly';
 
 const webClientId = process.env.EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID;
 const iosClientId = process.env.EXPO_PUBLIC_GOOGLE_IOS_CLIENT_ID;

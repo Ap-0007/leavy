@@ -26,7 +26,7 @@ function pick(s: Settings): SyncedSettings {
 
 const PUSH_DELAY_MS = 1500;
 
-export function useCloudSettings() {
+function useCloudSettings() {
   const { account } = useAuth();
   const { settings, ready, update } = useSettings();
   const userId = account?.id ?? null;

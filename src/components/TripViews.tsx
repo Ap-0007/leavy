@@ -24,7 +24,7 @@ export function countdownText(trip: Trip, timing: TripTiming): { lead: string; v
   }
 }
 
-export function tripHref(trip: Trip) {
+function tripHref(trip: Trip) {
   return { pathname: '/trip/[id]', params: { id: trip.event.key } } as const;
 }
 

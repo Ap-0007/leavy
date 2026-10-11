@@ -25,7 +25,7 @@ export interface Settings {
   notifyOverrides: Record<string, boolean>;
 }
 
-export const DEFAULT_SETTINGS: Settings = {
+const DEFAULT_SETTINGS: Settings = {
   graceMin: 10,
   defaultMode: 'drive',
   notifications: true,

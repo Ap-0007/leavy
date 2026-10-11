@@ -1,7 +1,7 @@
 import type { Trip, TripStatus } from '../types';
 
 /** Below this many minutes until "leave by", the trip turns amber. */
-export const SOON_MIN = 15;
+const SOON_MIN = 15;
 
 export interface TripTiming {
   status: TripStatus;
