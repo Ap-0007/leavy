@@ -2,7 +2,8 @@
 
 A calm little mobile app that reads your calendar, checks live travel time with Google Maps, and tells you **when to leave** for each event, including a grace period so you arrive a few minutes early.
 
-- **Calendars:** paste a private **calendar link** (Google "secret iCal address" or iCloud share link), which works in Expo Go. In a development build, it can also read the phone's calendars directly (`expo-calendar`).
+- **Accounts:** sign in with **Google** or **Apple** through Supabase Auth. Your preferences sync to your account in Supabase.
+- **Calendars:** Google sign-in also connects **Google Calendar** through the Google Calendar API. Apple sign-in reads the iPhone's calendars, including iCloud. You can also paste a private **calendar link** (Google "secret iCal address" or iCloud share link), which works in Expo Go. In a development build, it can also read the phone's calendars directly (`expo-calendar`).
 - **Travel time:** uses the Google **Routes API**, with live traffic for driving and real schedules for transit. Walking and cycling are supported too.
 - **Grace period:** set a global "arrive N min early", and override it per event.
 - **Alerts:** sends a local notification when it's time to leave, plus an optional heads-up. Alerts can be muted per event.
@@ -43,9 +44,51 @@ npm install
 
 6. Restart `npx expo start` so the key is picked up. `.env` and `.env.local` are git-ignored.
 
-### 2. Add your calendar
+### 2. Accounts and calendar sign-in (Supabase, Google, Apple)
 
-In the app, open **Settings → Your calendar** and paste a link. The app shows these steps too:
+Sign-in is optional. Without it, choose **Not now** on the welcome screen and use calendar links instead. Sign-in uses native modules, so it needs a [development build](https://docs.expo.dev/develop/development-builds/introduction/), not Expo Go.
+
+**Supabase**
+
+1. Create a project at <https://supabase.com/dashboard>.
+2. In the SQL editor, run `supabase/migrations/20261011000000_user_settings.sql`. It creates the `user_settings` table with row-level security. With the Supabase CLI, run `supabase db push` instead.
+3. From **Connect** (or Project Settings → API), copy the project URL and publishable key into `.env.local`:
+
+   ```
+   EXPO_PUBLIC_SUPABASE_URL=https://xxxx.supabase.co
+   EXPO_PUBLIC_SUPABASE_PUBLISHABLE_KEY=sb_publishable_...
+   ```
+
+**Google** (sign-in plus Google Calendar)
+
+1. In the Google Cloud Console project you use for Maps, enable the **Google Calendar API**.
+2. Set up the **OAuth consent screen** and add the scope `.../auth/calendar.readonly`. While the app is in *Testing*, add your Google account as a test user. Up to 100 test users work without Google's verification review.
+3. Under **Credentials**, create three OAuth client IDs:
+   - **Web application**: used by Supabase and as `webClientId`.
+   - **iOS**: bundle ID `com.langchen.leavy`.
+   - **Android**: package `com.langchen.leavy` plus the SHA-1 of your signing key. For EAS builds, run `npx eas-cli@latest credentials`.
+4. Add the IDs to `.env.local`:
+
+   ```
+   EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID=....apps.googleusercontent.com
+   EXPO_PUBLIC_GOOGLE_IOS_CLIENT_ID=....apps.googleusercontent.com
+   ```
+
+   `app.config.ts` turns the iOS ID into the URL scheme the native module needs.
+5. In Supabase, go to **Authentication → Sign In / Providers → Google** and turn it on. Paste the Web, iOS and Android client IDs, comma-separated with the Web one first, along with the Web client secret. If iOS sign-in fails with a nonce error, turn on **Skip nonce check**.
+
+**Apple** (iPhone only)
+
+1. In the Apple Developer portal, turn on **Sign in with Apple** for the App ID `com.langchen.leavy`. EAS does this when it builds, because `usesAppleSignIn` is set.
+2. In Supabase, go to **Authentication → Sign In / Providers → Apple**, turn it on, and add `com.langchen.leavy` to **Client IDs**. Native sign-in doesn't need the Services ID or signing key.
+
+Apple has no calendar API. After Apple sign-in, the app asks for access to the calendars on the iPhone, which include iCloud. Android users with an iCloud calendar can use a calendar link.
+
+**What's stored where:** Supabase stores your account and preferences (grace period, travel mode, alerts, per-event overrides). Calendar links, Google tokens and event data stay on the phone. The Google Sign-In SDK manages its own tokens.
+
+### 3. Or add a calendar link
+
+In the app, open **Settings → Calendar links** and paste a link. The app shows these steps too:
 
 - **Google Calendar** (desktop site only):
   1. Go to **calendar.google.com/calendar/r/settings**. On iPhone, open it in Safari → **aA** → *Request Desktop Website*.
@@ -56,11 +99,11 @@ In the app, open **Settings → Your calendar** and paste a link. The app shows 
 
 Treat these links like passwords. Google refreshes them every few hours, so new events can lag. Browsers block calendar links, so use the phone.
 
-### 3. Run it
+### 4. Run it
 
 **On your phone with Expo Go:** `npx expo start`, then scan the QR code with Expo Go. On school or work Wi-Fi that blocks devices from reaching each other, use `npx expo start --tunnel`. Until you add a calendar link, the app shows sample events.
 
-**Real calendars on your phone:** `expo-calendar` needs a [development build](https://docs.expo.dev/develop/development-builds/introduction/):
+**Sign-in and real calendars on your phone:** Google/Apple sign-in and `expo-calendar` need a [development build](https://docs.expo.dev/develop/development-builds/introduction/):
 
 ```bash
 npx expo run:android            # Android device/emulator (needs Android Studio)
@@ -74,11 +117,17 @@ To use Google Calendar, add your Google account to the phone (iOS: Settings → 
 ```
 src/
   app/                 Expo Router screens
+    sign-in.tsx        Welcome screen: Apple / Google sign-in or "Not now"
     (tabs)/index.tsx   Upcoming: next-trip hero card + later trips
     (tabs)/settings.tsx
     trip/[id].tsx      Timeline, per-event mode / grace / alert overrides
-  components/          ModePicker, GraceStepper, StatusPill, TripViews, shared UI
+  components/          AccountSettings, SignInButtons, ModePicker, GraceStepper, StatusPill, TripViews, shared UI
   lib/
+    auth.tsx           Supabase Auth session; Google and Apple sign-in
+    supabase.ts        Supabase client
+    cloudSync.ts       Syncs preferences to the user_settings table
+    google.ts          Native Google Sign-In, calendar scope and access tokens
+    googleCalendar.ts  Google Calendar API → events
     calendar.ts        Device calendars → events
     ics.ts             iCal parser: repeating events, moved/cancelled ones, timezones
     icsFeed.ts         Calendar links: download, cache, validate
@@ -89,6 +138,8 @@ src/
     settings.tsx       Persisted settings (AsyncStorage)
     demo.ts            Sample data
   theme.ts             Light/dark tokens, type scale, spacing
+supabase/migrations/   Database schema (user_settings + row-level security)
+app.config.ts          Adds the Google Sign-In plugin when the iOS client ID is set
 ```
 
 ## Known limits
